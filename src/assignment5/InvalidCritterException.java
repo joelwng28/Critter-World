@@ -11,4 +11,9 @@ public class InvalidCritterException extends Exception {
 		return "Invalid Critter Class: " + offending_class;
 	}
 
+	public String InvalidProcess(String input[]){
+		String newString = String.join(" ", input);
+		return "error processing: " + newString;
+	}
+
 }

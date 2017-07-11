@@ -1,109 +1,268 @@
 package assignment5;
 
+/* CRITTERS Critter.java
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * <Student1 Name>
+ * <Student1 EID>
+ * <Student1 5-digit Unique No.>
+ * <Student2 Name>
+ * <Student2 EID>
+ * <Student2 5-digit Unique No.>
+ * Slip days used: <0>
+ * Fall 2016
+ */
+
+
+import java.lang.reflect.*;
 import java.util.List;
 
+/* see the PDF for descriptions of the methods and fields in this class
+ * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
+ * no new public, protected or default-package code or data can be added to Critter
+ */
+
+
 public abstract class Critter {
-	/* NEW FOR PROJECT 5 */
-	public enum CritterShape {
-		CIRCLE,
-		SQUARE,
-		TRIANGLE,
-		DIAMOND,
-		STAR
-	}
-	
-	/* the default color is white, which I hope makes critters invisible by default
-	 * If you change the background color of your View component, then update the default
-	 * color to be the same as you background 
-	 * 
-	 * critters must override at least one of the following three methods, it is not 
-	 * proper for critters to remain invisible in the view
-	 * 
-	 * If a critter only overrides the outline color, then it will look like a non-filled 
-	 * shape, at least, that's the intent. You can edit these default methods however you 
-	 * need to, but please preserve that intent as you implement them. 
-	 */
-	public javafx.scene.paint.Color viewColor() { 
-		return javafx.scene.paint.Color.WHITE; 
-	}
-	
-	public javafx.scene.paint.Color viewOutlineColor() { return viewColor(); }
-	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
-	
-	public abstract CritterShape viewShape(); 
-	
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
+	private boolean canMove = true;
 
 	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
 	static {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
 	
-	protected final String look(int direction, boolean steps) {return "";}
-	
-	/* rest is unchanged from Project 4 */
-	
-	
 	private static java.util.Random rand = new java.util.Random();
+
 	public static int getRandomInt(int max) {
 		return rand.nextInt(max);
 	}
-	
+
 	public static void setSeed(long new_seed) {
 		rand = new java.util.Random(new_seed);
 	}
-	
-	
+
 	/* a one-character long string that visually depicts your critter in the ASCII interface */
-	public String toString() { return ""; }
+	public String toString() {
+		return "";
+	}
 	
 	private int energy = 0;
 	protected int getEnergy() { return energy; }
 	
 	private int x_coord;
 	private int y_coord;
+
+	/* have to make sure that the coordinates are not out of bound */
+	protected final void walk(int direction) {
+		this.energy -= Params.walk_energy_cost;
+		if(canMove){
+			canMove = false;
+			switch(direction){
+			case 0:
+				this.x_coord++;
+				break;
+			case 1:
+				this.x_coord++;
+				this.y_coord--;
+				break;
+			case 2:
+				this.y_coord--;
+				break;
+			case 3:
+				this.y_coord--;
+				this.x_coord--;
+				break;
+			case 4:
+				this.x_coord--;
+				break;
+			case 5:
+				this.x_coord--;
+				this.y_coord++;
+				break;
+			case 6:
+				this.y_coord++;
+				break;
+			case 7:
+				this.x_coord++;
+				this.y_coord++;
+				break;
+			}
+			if (this.x_coord < 0){
+				this.x_coord += Params.world_width;
+			}
+			if (this.x_coord > (Params.world_width - 1)){
+				this.x_coord -= Params.world_width;
+			}
+			if (this.y_coord < 0){
+				this.y_coord += Params.world_height;
+			}
+			if (this.y_coord > (Params.world_height - 1)){
+				this.y_coord -= Params.world_height;
+			}
+		}
+	}
 	
-	protected final void walk(int direction) {}
+	protected final void run(int direction) {
+		this.energy -= Params.run_energy_cost;
+		if(canMove) {
+			canMove = false;
+			switch (direction) {
+				case 0:
+					this.x_coord += 2;
+					break;
+				case 1:
+					this.x_coord += 2;
+					this.y_coord -= 2;
+					break;
+				case 2:
+					this.y_coord -= 2;
+					break;
+				case 3:
+					this.y_coord -= 2;
+					this.x_coord -= 2;
+					break;
+				case 4:
+					this.x_coord -= 2;
+					break;
+				case 5:
+					this.x_coord -= 2;
+					this.y_coord += 2;
+					break;
+				case 6:
+					this.y_coord += 2;
+					break;
+				case 7:
+					this.x_coord += 2;
+					this.y_coord += 2;
+					break;
+			}
+			if (this.x_coord < 0){
+				this.x_coord += Params.world_width;
+			}
+			if (this.x_coord > (Params.world_width - 1)){
+				this.x_coord -= Params.world_width;
+			}
+			if (this.y_coord < 0){
+				this.y_coord += Params.world_height;
+			}
+			if (this.y_coord > (Params.world_height - 1)){
+				this.y_coord -= Params.world_height;
+			}
+		}
+	}
 	
-	protected final void run(int direction) {}
-	
-	protected final void reproduce(Critter offspring, int direction) {}
+	protected final void reproduce(Critter offspring, int direction) {
+		if(this.energy < Params.min_reproduce_energy){ return;}
+		offspring.energy = this.energy/2;
+		this.energy = (this.energy + 1)/2;
+
+		offspring.walk(direction);
+		offspring.energy += Params.walk_energy_cost;
+
+		babies.add(offspring);
+	}
 
 	public abstract void doTimeStep();
 	public abstract boolean fight(String oponent);
 	
-	
-	public static void worldTimeStep() {}
-	
-	public static void displayWorld(Object pane) {} 
-	/* Alternate displayWorld, where you use Main.<pane> to reach into your
-	   display component.
-	   // public static void displayWorld() {}
-	*/
-	
-	/* create and initialize a Critter subclass
-	 * critter_class_name must be the name of a concrete subclass of Critter, if not
-	 * an InvalidCritterException must be thrown
+	/**
+	 * create and initialize a Critter subclass.
+	 * critter_class_name must be the unqualified name of a concrete subclass of Critter, if not,
+	 * an InvalidCritterException must be thrown.
+	 * (Java weirdness: Exception throwing does not work properly if the parameter has lower-case instead of
+	 * upper. For example, if craig is supplied instead of Craig, an error is thrown instead of
+	 * an Exception.)
+	 * @param critter_class_name
+	 * @throws InvalidCritterException
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {}
-	
-	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
-		return null;
+	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+		Class<?> critterClass;
+		Constructor<?> critterConstructor;
+		/*
+		if(!critter_class_name.equals("Algae")){
+			if(!critter_class_name.equals("Craig")){
+				if(!critter_class_name.equals("Liuxx1")){
+					if(!critter_class_name.equals("Liuxx2"))
+						throw new InvalidCritterException(critter_class_name);
+				}
+			}
+		}
+		*/
+
+		try {
+			critterClass = Class.forName(myPackage + "." + critter_class_name);
+			critterConstructor = critterClass.getConstructor();
+			Critter newCritter = (Critter)critterConstructor.newInstance();
+			newCritter.x_coord = Critter.getRandomInt(Params.world_width);
+			newCritter.y_coord = Critter.getRandomInt(Params.world_height);
+			newCritter.energy = Params.start_energy;
+			population.add(newCritter);
+		} catch (Exception e) {
+			throw new InvalidCritterException(critter_class_name);
+			//e.printStackTrace();
+		}
 	}
 	
-	public static void runStats(List<Critter> critters) {}
+	/**
+	 * Gets a list of critters of a specific type.
+	 * @param critter_class_name What kind of Critter is to be listed.  Unqualified class name.
+	 * @return List of Critters.
+	 * @throws InvalidCritterException
+	 */
+	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
+		List<Critter> result = new java.util.ArrayList<Critter>();
+		Class<?> c_class = null;
+		try {
+			c_class = Class.forName(myPackage + "." + critter_class_name);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
+		for(Critter critter : population){
+			if(c_class.isInstance(critter)){
+				result.add(critter);
+			}
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Prints out how many Critters of each type there are on the board.
+	 * @param critters List of Critters.
+	 */
+	public static void runStats(List<Critter> critters) {
+		System.out.print("" + critters.size() + " critters as follows -- ");
+		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
+		for (Critter crit : critters) {
+			String crit_string = crit.toString();
+			Integer old_count = critter_count.get(crit_string);
+			if (old_count == null) {
+				critter_count.put(crit_string,  1);
+			} else {
+				critter_count.put(crit_string, old_count.intValue() + 1);
+			}
+		}
+		String prefix = "";
+		for (String s : critter_count.keySet()) {
+			System.out.print(prefix + s + ":" + critter_count.get(s));
+			prefix = ", ";
+		}
+		System.out.println();		
+	}
 	
 	/* the TestCritter class allows some critters to "cheat". If you want to 
 	 * create tests of your Critter model, you can create subclasses of this class
 	 * and then use the setter functions contained here. 
 	 * 
-	 * NOTE: you must make sure thath the setter functions work with your implementation
+	 * NOTE: you must make sure that the setter functions work with your implementation
 	 * of Critter. That means, if you're recording the positions of your critters
 	 * using some sort of external grid or some other data structure in addition
 	 * to the x_coord and y_coord functions, then you MUST update these setter functions
-	 * so that they correctup update your grid/data structure.
+	 * so that they correctly update your grid/data structure.
 	 */
 	static abstract class TestCritter extends Critter {
 		protected void setEnergy(int new_energy_value) {
@@ -146,12 +305,169 @@ public abstract class Critter {
 			return babies;
 		}
 	}
-	
+
 	/**
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
+		// Complete this method.
+		population.clear();
 	}
 	
+	public static void worldTimeStep() {
+
+		//Do time step
+		for (Critter critter : population){
+			critter.doTimeStep();
+		}
+
+		//then process encounter
+		//identify if two or more critters are in the same spot
+		for(Critter first: population){
+			for(Critter second: population){
+				if(first == second){
+					continue;
+				}
+				if(first.getEnergy() <= 0 || second.getEnergy() <= 0){
+					continue;
+				}
+				if((first.x_coord == second.x_coord) && (first.y_coord == second.y_coord)){
+					int currentX = first.x_coord;
+					int currentY = first.y_coord;
+					boolean firstSame = false;
+					boolean secondSame = false;
+					boolean firstFight = first.fight(second.toString());
+					if(!first.isEmpty()){
+						first.x_coord = currentX;
+						first.y_coord = currentY;
+					}
+					boolean secondFight = second.fight(first.toString());
+					if(!second.isEmpty()){
+						second.x_coord = currentX;
+						second.y_coord = currentY;
+					}
+					firstSame = (first.x_coord == currentX && first.y_coord == currentY);
+					secondSame = (second.x_coord == currentX && second.y_coord == currentY);
+					if(firstSame && secondSame){
+						if((first.getEnergy() >= 0) && (second.getEnergy() >= 0)){
+							int firstRoll;
+							int secondRoll;
+							if(!firstFight){
+								firstRoll = 0;
+							}
+							else{
+								firstRoll = Critter.getRandomInt(first.getEnergy());
+							}
+							if(!secondFight){
+								secondRoll = 0;
+							}
+							else{
+								secondRoll = Critter.getRandomInt(second.getEnergy());
+							}
+							if(firstRoll >= secondRoll){
+								first.energy += ((second.getEnergy())/2);
+								second.energy = 0;
+							}
+							if(secondRoll > firstRoll){
+								second.energy += ((first.getEnergy())/2);
+								first.energy = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		//count rest energy
+		for (Critter critter : population){
+			critter.energy = critter.energy - Params.rest_energy_cost;
+		}
+
+		//Algea spawn
+		for(int i = 0; i < Params.refresh_algae_count; i++){
+			try {
+				Critter.makeCritter("Algae");
+			} catch (InvalidCritterException e) {
+				e.printStackTrace();
+			}
+		}
+
+		//New babies spawn
+		for(Critter baby : babies){
+			population.add(baby);
+		}
+
+		//java.util.ArrayList<Critter> temp = new java.util.ArrayList<Critter>(babies);
+		babies.clear();
+
+		//clean up
+		java.util.ArrayList<Critter> remove = new java.util.ArrayList<Critter>();
+		for(Critter toRemove : population){
+			if(toRemove.energy <= 0){
+				remove.add(toRemove);
+			}
+		}
+
+		for(Critter critter : remove){
+			population.remove(critter);
+		}
+		//worldTimeStep Done
+	}
+
+
+	private void critterEncounter(){
+
+	}
+
+
+	private boolean isEmpty(){
+		for (Critter other : population){
+			if(this == other){
+				continue;
+			}
+			if((this.x_coord == other.x_coord) && (this.y_coord == other.y_coord)){
+				if(other.energy > 0){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	
+	public static void displayWorld() {
+		String[][] output = new String[Params.world_height+2][Params.world_width+2];
+		int width = Params.world_width;
+		int height = Params.world_height;
+		for(int y = 0; y < (height + 2); y++){
+			for(int x = 0; x < (width + 2); x++){
+				if (y == 0 || y == (height + 1)) {
+					if (x == 0 || x == (width + 1)) {
+						output[y][x] = "+";
+						continue;
+					}
+					else {
+						output[y][x] = "-";
+						continue;
+					}
+				}
+				else if (x == 0 || x == (width + 1)) {
+					output[y][x] = "|";
+					continue;
+				}
+				else{
+					output[y][x] = " ";
+				}
+			}
+		}
+		for (Critter critter : population) {
+			output[critter.y_coord + 1][critter.x_coord + 1] = critter.toString();			
+		}
+		for(String[] row: output){
+			for(String element: row){
+				System.out.print(element);
+			}
+			System.out.println();
+		}
+	}
 }
