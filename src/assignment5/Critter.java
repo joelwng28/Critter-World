@@ -1,20 +1,14 @@
-/* CRITTERS Critter.java
- * EE422C Project 4 submission by
- * Replace <...> with your actual data.
- * Xiangxing Liu
- * xl5587
- * 76175
- * Zi Zhou Wang
- * zw3948
- * 76175
- * Slip days used: <0>
- * Git URL: https://github.com/joelwng28/assignment4
- * Summer 2017
- */
 package assignment5;
 
 import java.util.List;
 import java.lang.reflect.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -25,27 +19,27 @@ public abstract class Critter {
 		DIAMOND,
 		STAR
 	}
-
+	
 	/* the default color is white, which I hope makes critters invisible by default
 	 * If you change the background color of your View component, then update the default
-	 * color to be the same as you background
-	 *
-	 * critters must override at least one of the following three methods, it is not
+	 * color to be the same as you background 
+	 * 
+	 * critters must override at least one of the following three methods, it is not 
 	 * proper for critters to remain invisible in the view
-	 *
-	 * If a critter only overrides the outline color, then it will look like a non-filled
-	 * shape, at least, that's the intent. You can edit these default methods however you
-	 * need to, but please preserve that intent as you implement them.
+	 * 
+	 * If a critter only overrides the outline color, then it will look like a non-filled 
+	 * shape, at least, that's the intent. You can edit these default methods however you 
+	 * need to, but please preserve that intent as you implement them. 
 	 */
-	public javafx.scene.paint.Color viewColor() {
-		return javafx.scene.paint.Color.WHITE;
+	public javafx.scene.paint.Color viewColor() { 
+		return javafx.scene.paint.Color.WHITE; 
 	}
-
+	
 	public javafx.scene.paint.Color viewOutlineColor() { return viewColor(); }
 	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
-
-	public abstract CritterShape viewShape();
-
+	
+	public abstract CritterShape viewShape(); 
+	
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
@@ -55,7 +49,7 @@ public abstract class Critter {
 	static {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
-
+	
 	protected final String look(int direction, boolean steps) {
 		this.energy -= Params.look_energy_cost;
 		int range;
@@ -67,34 +61,34 @@ public abstract class Critter {
 			range = 1;
 		}
 		switch(direction){
-			case 0:
-				x += range;
-				break;
-			case 1:
-				x += range;
-				y -= range;
-				break;
-			case 2:
-				y -= range;
-				break;
-			case 3:
-				y -= range;
-				x -= range;
-				break;
-			case 4:
-				x -= range;
-				break;
-			case 5:
-				x -= range;
-				y += range;
-				break;
-			case 6:
-				y += range;
-				break;
-			case 7:
-				x += range;
-				y += range;
-				break;
+		case 0:
+			x += range;
+			break;
+		case 1:
+			x += range;
+			y -= range;
+			break;
+		case 2:
+			y -= range;
+			break;
+		case 3:
+			y -= range;
+			x -= range;
+			break;
+		case 4:
+			x -= range;
+			break;
+		case 5:
+			x -= range;
+			y += range;
+			break;
+		case 6:
+			y += range;
+			break;
+		case 7:
+			x += range;
+			y += range;
+			break;
 		}
 		if (x < 0){
 			x += Params.world_width;
@@ -114,65 +108,65 @@ public abstract class Critter {
 					return critter.toString();
 				}
 		}
-
+		
 		return null;
 	}
-
+	
 	/* rest is unchanged from Project 4 */
-
-
+	
+	
 	private static java.util.Random rand = new java.util.Random();
 	public static int getRandomInt(int max) {
 		return rand.nextInt(max);
 	}
-
+	
 	public static void setSeed(long new_seed) {
 		rand = new java.util.Random(new_seed);
 	}
-
-
+	
+	
 	/* a one-character long string that visually depicts your critter in the ASCII interface */
 	public String toString() { return ""; }
-
+	
 	private int energy = 0;
 	protected int getEnergy() { return energy; }
-
+	
 	private int x_coord;
 	private int y_coord;
-
+	
 	protected final void walk(int direction) {
 		this.energy -= Params.walk_energy_cost;
 		if(canMove){
 			canMove = false;
 			switch(direction){
-				case 0:
-					this.x_coord++;
-					break;
-				case 1:
-					this.x_coord++;
-					this.y_coord--;
-					break;
-				case 2:
-					this.y_coord--;
-					break;
-				case 3:
-					this.y_coord--;
-					this.x_coord--;
-					break;
-				case 4:
-					this.x_coord--;
-					break;
-				case 5:
-					this.x_coord--;
-					this.y_coord++;
-					break;
-				case 6:
-					this.y_coord++;
-					break;
-				case 7:
-					this.x_coord++;
-					this.y_coord++;
-					break;
+			case 0:
+				this.x_coord++;
+				break;
+			case 1:
+				this.x_coord++;
+				this.y_coord--;
+				break;
+			case 2:
+				this.y_coord--;
+				break;
+			case 3:
+				this.y_coord--;
+				this.x_coord--;
+				break;
+			case 4:
+				this.x_coord--;
+				break;
+			case 5:
+				this.x_coord--;
+				this.y_coord++;
+				break;
+			case 6:
+				this.y_coord++;
+				break;
+			case 7:
+				this.x_coord++;
+				this.y_coord++;
+				break;
 			}
 			if (this.x_coord < 0){
 				this.x_coord += Params.world_width;
@@ -188,7 +182,7 @@ public abstract class Critter {
 			}
 		}
 	}
-
+	
 	protected final void run(int direction) {
 		this.energy -= Params.run_energy_cost;
 		if(canMove) {
@@ -237,7 +231,7 @@ public abstract class Critter {
 			}
 		}
 	}
-
+	
 	protected final void reproduce(Critter offspring, int direction) {
 		if(this.energy < Params.min_reproduce_energy){ return;}
 		offspring.energy = this.energy/2;
@@ -251,8 +245,8 @@ public abstract class Critter {
 
 	public abstract void doTimeStep();
 	public abstract boolean fight(String oponent);
-
-
+	
+	
 	public static void worldTimeStep() {
 		for (Critter critter : population){
 			critter.doTimeStep();
@@ -321,6 +315,7 @@ public abstract class Critter {
 		//count rest energy
 		for (Critter critter : population){
 			critter.energy = critter.energy - Params.rest_energy_cost;
+			critter.canMove = true;
 		}
 
 		//Algea spawn
@@ -352,47 +347,64 @@ public abstract class Critter {
 			population.remove(critter);
 		}
 	}
-
-	public static void displayWorld(Object pane) {
-		String[][] output = new String[Params.world_height+2][Params.world_width+2];
-		int width = Params.world_width;
-		int height = Params.world_height;
-		for(int y = 0; y < (height + 2); y++){
-			for(int x = 0; x < (width + 2); x++){
-				if (y == 0 || y == (height + 1)) {
-					if (x == 0 || x == (width + 1)) {
-						output[y][x] = "+";
-						continue;
-					}
-					else {
-						output[y][x] = "-";
-						continue;
-					}
-				}
-				else if (x == 0 || x == (width + 1)) {
-					output[y][x] = "|";
-					continue;
-				}
-				else{
-					output[y][x] = " ";
-				}
+	
+	public static void displayWorld() {
+		List<Shape> crittersAsShapes = new ArrayList<Shape>();
+		
+		Iterator<Critter> iterator = population.iterator();
+		while(iterator.hasNext()) {
+			Critter c = iterator.next();
+			Shape s;
+			if(c.x_coord < 0 || c.y_coord < 0)
+				System.out.println("coord error " + c.x_coord + " " + c.y_coord);
+			int xGUI = c.x_coord * (Main.worldWidthGUI/Params.world_width);
+			int yGUI = c.y_coord * (Main.worldHeightGUI/Params.world_height);
+			int radiusGUI = Main.worldWidthGUI/Params.world_width/2;
+			switch (c.viewShape()){
+				case SQUARE: 
+					s = new Polygon(xGUI, 				yGUI,
+									xGUI + 2*radiusGUI,  	yGUI,
+									xGUI + 2*radiusGUI,	yGUI + 2*radiusGUI,
+									xGUI,				yGUI + 2*radiusGUI);
+					break;
+				case TRIANGLE: 
+					//created in bottom left, top, bottom right order
+					s = new Polygon(xGUI+1, yGUI + 2*radiusGUI-1, xGUI + radiusGUI, yGUI+1, xGUI + 2*radiusGUI-1, yGUI + 2*radiusGUI-1);
+					break;
+				case DIAMOND: 
+					//created left, top, right, bottom
+					s = new Polygon(xGUI+1, yGUI + radiusGUI, xGUI + radiusGUI, yGUI+1, xGUI + 2*radiusGUI-1, yGUI + radiusGUI, xGUI + radiusGUI, yGUI + 2*radiusGUI-1);
+					break;
+				case STAR:
+					s = new Polygon(xGUI+1, 					yGUI + .8*radiusGUI,
+									xGUI + .7*radiusGUI, 	yGUI + .8*radiusGUI, 
+									xGUI + radiusGUI, 		yGUI + 1, 
+									xGUI + 1.3*radiusGUI,	yGUI + .8*radiusGUI,
+									xGUI + 2*radiusGUI - 1, 	yGUI + .8*radiusGUI,
+									xGUI + 1.4*radiusGUI, 	yGUI + 1.3*radiusGUI,
+									xGUI + 1.6*radiusGUI, 	yGUI + 2*radiusGUI - 1,
+									xGUI + radiusGUI, 		yGUI + 1.6*radiusGUI,
+									xGUI + .4*radiusGUI, 	yGUI + 2*radiusGUI-1,
+									xGUI + .6*radiusGUI,	yGUI + 1.3*radiusGUI);
+					break;
+				default:
+					s = new Circle(xGUI + radiusGUI, yGUI + radiusGUI, radiusGUI);
+					break;
+			
 			}
+			s.setFill(c.viewColor());
+			s.setStroke(c.viewOutlineColor());
+			crittersAsShapes.add(s);
 		}
-		for (Critter critter : population) {
-			output[critter.y_coord + 1][critter.x_coord + 1] = critter.toString();
-		}
-		for(String[] row: output){
-			for(String element: row){
-				System.out.print(element);
-			}
-			System.out.println();
-		}
-	}
+		
+		
+		Main.displayWorldGUI((ArrayList)crittersAsShapes);
+	} 
 	/* Alternate displayWorld, where you use Main.<pane> to reach into your
 	   display component.
 	   // public static void displayWorld() {}
 	*/
-
+	
 	/* create and initialize a Critter subclass
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
 	 * an InvalidCritterException must be thrown
@@ -413,7 +425,7 @@ public abstract class Critter {
 			//e.printStackTrace();
 		}
 	}
-
+	
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		Class<?> c_class = null;
@@ -431,7 +443,7 @@ public abstract class Critter {
 
 		return result;
 	}
-
+	
 	public static void runStats(List<Critter> critters) {
 		System.out.print("" + critters.size() + " critters as follows -- ");
 		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
@@ -449,13 +461,13 @@ public abstract class Critter {
 			System.out.print(prefix + s + ":" + critter_count.get(s));
 			prefix = ", ";
 		}
-		System.out.println();
+		System.out.println();	
 	}
-
-	/* the TestCritter class allows some critters to "cheat". If you want to
+	
+	/* the TestCritter class allows some critters to "cheat". If you want to 
 	 * create tests of your Critter model, you can create subclasses of this class
-	 * and then use the setter functions contained here.
-	 *
+	 * and then use the setter functions contained here. 
+	 * 
 	 * NOTE: you must make sure thath the setter functions work with your implementation
 	 * of Critter. That means, if you're recording the positions of your critters
 	 * using some sort of external grid or some other data structure in addition
@@ -466,23 +478,23 @@ public abstract class Critter {
 		protected void setEnergy(int new_energy_value) {
 			super.energy = new_energy_value;
 		}
-
+		
 		protected void setX_coord(int new_x_coord) {
 			super.x_coord = new_x_coord;
 		}
-
+		
 		protected void setY_coord(int new_y_coord) {
 			super.y_coord = new_y_coord;
 		}
-
+		
 		protected int getX_coord() {
 			return super.x_coord;
 		}
-
+		
 		protected int getY_coord() {
 			return super.y_coord;
 		}
-
+		
 
 		/*
 		 * This method getPopulation has to be modified by you if you are not using the population
@@ -492,18 +504,18 @@ public abstract class Critter {
 		protected static List<Critter> getPopulation() {
 			return population;
 		}
-
+		
 		/*
 		 * This method getBabies has to be modified by you if you are not using the babies
 		 * ArrayList that has been provided in the starter code.  In any case, it has to be
-		 * implemented for grading tests to work.  Babies should be added to the general population
+		 * implemented for grading tests to work.  Babies should be added to the general population 
 		 * at either the beginning OR the end of every timestep.
 		 */
 		protected static List<Critter> getBabies() {
 			return babies;
 		}
 	}
-
+	
 	/**
 	 * Clear the world of all critters, dead and alive
 	 */
@@ -523,5 +535,5 @@ public abstract class Critter {
 		}
 		return true;
 	}
-
+	
 }
