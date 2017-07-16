@@ -12,11 +12,11 @@ package assignment5;
  */
 	
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javafx.application.Application;
@@ -29,8 +29,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -45,14 +45,14 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
-	static Group world = new Group();
+	static Group stage = new Group();
 	static Set<String> critterTypes = new HashSet<String>();
 	static GridPane grid = new GridPane();
 	static BorderPane window = new BorderPane();
 	static int row = 0;
-	static int worldWidthGUI = 700;
-	static int worldHeightGUI = 700;
-	static Shape s;
+	static int worldWidthGUI = 640;
+	static int worldHeightGUI = 640;
+	static Shape shape;
 	static boolean stopTimers = true;
 	static boolean stopFast = false;
 	static boolean stopSlow = false;
@@ -61,254 +61,293 @@ public class Main extends Application {
 
 
 	@Override
-	public void start(Stage primaryStage) {
-		try {
-			Stage stage = new Stage();
-			stage.setTitle("Change World Parameters");
-			
-			stage.setAlwaysOnTop(true);
-			GridPane settings = new GridPane();
-			settings.setAlignment(Pos.TOP_CENTER);
-			settings.setHgap(5);
-			settings.setVgap(5);
-			settings.setPadding(new Insets(25, 25, 25, 25));
-			
-			Label widthName = new Label("World Width:");
-			settings.add(widthName, 0, 0);
-			TextField widthField = new TextField();
-			settings.add(widthField, 2, 0);
-			
-			Label heightName = new Label("World Height:");
-			settings.add(heightName, 0, 2);
-			TextField heightField = new TextField();
-			settings.add(heightField, 2, 2);
-			
-			Label refreshName = new Label("Algae Refresh Rate:");
-			settings.add(refreshName, 0, 4);
-			TextField refreshField = new TextField();
-			settings.add(refreshField, 2, 4);
-			
-			Button settingConfirm = new Button("Update");
-			HBox hbConfirm = new HBox(10);
-			hbConfirm.setAlignment(Pos.BOTTOM_RIGHT);
-			hbConfirm.getChildren().add(settingConfirm);
-			settings.add(hbConfirm, 0, 10);
-			
-			Button cancel = new Button("Default");
-			HBox hbCancel = new HBox(10);
-			hbCancel.setAlignment(Pos.BOTTOM_LEFT);
-			hbCancel.getChildren().add(cancel);
-			settings.add(hbCancel, 1, 10);
-			
-			Scene settingScene = new Scene(settings, 500, 200);
-			stage.setScene(settingScene);
-			stage.show();
-						
-			settingConfirm.setOnAction(new EventHandler<ActionEvent>(){
+	public void start(Stage primaryStage){
+		try{
+			primaryStage.setTitle("Project 5");
+			shape = new Rectangle(worldWidthGUI, worldHeightGUI);
+			shape.setFill(Color.LAVENDER);
+			shape.setStroke(Color.BLACK);
+			shape.setStrokeDashOffset(10);
+			shape.setStrokeWidth(2);
+			stage.getChildren().add(shape);
 
-				@Override
-				public void handle(ActionEvent event) {
-					// TODO Auto-generated method stub
-					String width = widthField.getText();
-					String height = heightField.getText();
-					String refresh = refreshField.getText();
-					if(!width.isEmpty()) {
-						Params.world_width = Integer.parseInt(width);
-					}
-					if(!height.isEmpty()) {
-						Params.world_height = Integer.parseInt(height);
-					}
-					if(!refresh.isEmpty()) {
-						Params.refresh_algae_count = Integer.parseInt(refresh);
-					}
-					stage.close();
-				}
-				
-			});
-			
-			cancel.setOnAction(new EventHandler<ActionEvent>(){
-				@Override
-				public void handle(ActionEvent event) {
-					stage.close();
-				}
-			});
-			
-		
-			primaryStage.setTitle("Java FX Critters");
-			s = new Rectangle(worldWidthGUI, worldHeightGUI);
-			s.setFill(Color.LIGHTBLUE);
-			s.setStroke(Color.BLACK);
-			s.setStrokeDashOffset(10);
-			s.setStrokeWidth(2);
-			world.getChildren().add(s);
-			
 			// Add a grid pane to lay out the buttons and text fields.
-
-
 			window.setLeft(grid);
-			window.setCenter(world);
+			window.setRight(stage);
 			grid.setAlignment(Pos.CENTER_LEFT);
 			grid.setHgap(5);
 			grid.setVgap(5);
-			grid.setPrefWidth(400);
-			grid.setPadding(new Insets(25, 25, 25, 25));
-			
-			
-			
-			// Add Field for Critter type.
-			Label critName = new Label("Critter Name:");
-			grid.add(critName, 0, row);
-//			TextField critNameField = new TextField();
-//			//row++;
-//			grid.add(critNameField, 1, row);
+			grid.setPrefWidth(360);
+			grid.setPadding(new Insets(10, 10, 10, 10));
 
-			ComboBox critNameField = new ComboBox();
-			ObservableList<String> critterList = FXCollections.observableArrayList(
-					"Algae", 
-					"Craig");
-			critNameField.setItems(critterList);
-			grid.add(critNameField, 1, row);
-			
+			// Add Field for Critter type.
+			Label type = new Label("Critter Type:");
+			grid.add(type, 0, row);
+			ComboBox typeSelection = new ComboBox();
+			ObservableList<String> typeList = FXCollections.observableArrayList(
+					"Algae",
+					"Craig",
+                    "Liuxx",
+                    "Joel",
+                    "Nandakumar",
+                    "Moez");
+
+            typeSelection.setItems(typeList);
+			grid.add(typeSelection, 1, row);
+
 			// Add Field for No. of Critters
-			Label numCrits = new Label("No of critters:");
+			Label amount = new Label("Amount:");
 			row++;
-			grid.add(numCrits, 0, row);
-			TextField critNumField = new TextField();
-			//row++;
-			grid.add(critNumField, 1, row);
-			
-			// Add Button to add Critters.
-			Button addBtn = new Button("Add critters");
-			HBox hbAddBtn = new HBox(10);
-			hbAddBtn.setAlignment(Pos.BOTTOM_LEFT);
-			hbAddBtn.getChildren().add(addBtn);
+			grid.add(amount, 0, row);
+			TextField amountField = new TextField();
+			grid.add(amountField, 1, row);
+
+			//Add button
+			Button add = new Button("Add");
+			HBox addBox = new HBox(10);
+			addBox.setAlignment(Pos.BOTTOM_LEFT);
+			addBox.getChildren().add(add);
+			grid.add(addBox, 2, row);
+
+			//Critter type warning
+			final Text critterSelection = new Text();
 			row += 2;
-			grid.add(hbAddBtn, 1, row);
-			
-			// Action when Add Critters Button is pressed.
-			final Text actionTarget = new Text();
-			row += 2;
-			grid.add(actionTarget, 1, row);
-			Scene scene = new Scene(window, 1400, 800);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-			
-			Label timeStep = new Label("# of Time Steps:");
+			grid.add(critterSelection, 1, row);
+
+			Label steps = new Label("Steps:");
 			row++;
-			grid.add(timeStep, 0, row);
-			TextField timeField = new TextField();
-			grid.add(timeField, 1, row);
-			
-			Button stepBtn = new Button("Step");
-			HBox hbStepBtn = new HBox(10);
-			hbStepBtn.setAlignment(Pos.BOTTOM_LEFT);
-			hbStepBtn.getChildren().add(stepBtn);
-			row += 2;
-			grid.add(hbStepBtn, 1, row);
-			
-			Button quitBtn = new Button("Quit");
-			quitBtn.setPrefWidth(70);
-			HBox hbQuitBtn = new HBox(10);
-			hbQuitBtn.setAlignment(Pos.BOTTOM_RIGHT);
-			hbQuitBtn.getChildren().add(quitBtn);
-			row += 8;
-			grid.add(hbQuitBtn, 0, row);
-			
-			Button resetButton = new Button("Clear");
-			resetButton.setPrefWidth(70);
-			HBox hbResetBtn = new HBox(10);
-			hbResetBtn.setAlignment(Pos.BOTTOM_LEFT);
-			hbResetBtn.getChildren().add(resetButton);
-			grid.add(hbResetBtn, 1, row);
-			
+			grid.add(steps, 0, row);
+			TextField time = new TextField();
+			grid.add(time, 1, row);
+
+            //Add go button
+            //Go button go for the amount of step selected by user
+            Button go = new Button("Go");
+            HBox goBox = new HBox(10);
+            goBox.setAlignment(Pos.BOTTOM_LEFT);
+            goBox.getChildren().add(go);
+            grid.add(goBox, 2, row);
+
+            final Text timeSelection = new Text();
+            row += 2;
+            grid.add(timeSelection, 2, row);
+
+			//Add step button
+            //Step only go for 1 step
+            Button step = new Button("Step");
+            HBox stepBox = new HBox(10);
+            stepBox.setAlignment(Pos.BOTTOM_LEFT);
+            stepBox.getChildren().add(step);
+            grid.add(stepBox, 1, row);
+
+            //Add buttion for setseed
+            Label seed = new Label("Seed:");
+            row += 4;
+            grid.add(seed, 0, row);
+            TextField seedInput = new TextField();
+            grid.add(seedInput, 1, row);
+            Button setSeed = new Button("Set");
+            HBox seedBox = new HBox(10);
+            seedBox.setAlignment(Pos.BOTTOM_LEFT);
+            seedBox.getChildren().add(setSeed);
+            grid.add(seedBox, 2, row);
+
+			//Add buttons for stats
+            Label stat = new Label("Stats Type:");
+            row += 10;
+            grid.add(stat, 0, row);
+            ComboBox statSelection = new ComboBox();
+            statSelection.setItems(typeList);
+            grid.add(statSelection, 1, row);
+
+            Button show = new Button("Show");
+            HBox showBox = new HBox(10);
+            showBox.setAlignment(Pos.BOTTOM_LEFT);
+            showBox.getChildren().add(show);
+            grid.add(showBox, 2, row);
+
+            row += 2;
+            final Text statsAlgae = new Text();
+            grid.add(statsAlgae, 1, row);
+
+            final Text statsCraig = new Text();
+            row += 1;
+            grid.add(statsCraig, 1, row);
+
+            final Text statsLiuxx = new Text();
+            row += 1;
+            grid.add(statsLiuxx, 1, row);
+
+            final Text statsJoel = new Text();
+            row += 1;
+            grid.add(statsJoel, 1, row);
+
+
+			//Add buttons for animation
 			Button playSlowButton = new Button("Slow");
 			playSlowButton.setPrefWidth(70);
 			HBox hbPSBtn = new HBox(10);
 			hbPSBtn.setAlignment(Pos.BOTTOM_LEFT);
 			hbPSBtn.getChildren().add(playSlowButton);
 			grid.add(hbPSBtn, 2, row+5);
-			
+
 			Button playFastButton = new Button("Fast");
 			playFastButton.setPrefWidth(70);
 			HBox hbPFBtn = new HBox(10);
 			hbPFBtn.setAlignment(Pos.BOTTOM_LEFT);
 			hbPFBtn.getChildren().add(playFastButton);
 			grid.add(hbPFBtn, 2, row+6);
-			
+
 			Button stopAnmtButton = new Button("Pause");
 			stopAnmtButton.setPrefWidth(70);
 			HBox hbStpAnmtBtn = new HBox(10);
 			hbStpAnmtBtn.setAlignment(Pos.BOTTOM_LEFT);
 			hbStpAnmtBtn.getChildren().add(stopAnmtButton);
 			grid.add(hbStpAnmtBtn, 2, row+7);
-			
-			//grid.setGridLinesVisible(true);
-			
-			updateStats();
-			
-			// Action when add critters button is pressed. Call makeCritter.
-			// Uses something called an anonymous class of type EventHandler<ActionEvent>, which is a class that is
-			// defined inline, in the curly braces.
-			addBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            //Add exit button
+            Button exit = new Button("Exit");
+            exit.setPrefWidth(70);
+            HBox exitBox = new HBox(10);
+            exitBox.setAlignment(Pos.BOTTOM_RIGHT);
+            exitBox.getChildren().add(exit);
+            row += 20;
+            grid.add(exitBox, 0, row);
+
+            //Add reset button
+            Button reset = new Button("Reset");
+            reset.setPrefWidth(70);
+            HBox resBox = new HBox(10);
+            resBox.setAlignment(Pos.BOTTOM_LEFT);
+            resBox.getChildren().add(reset);
+            grid.add(resBox, 1, row);
+
+            Scene scene = new Scene(window, worldWidthGUI + 362, worldHeightGUI + 2);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+            //Set Action for each buttons
+			add.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					if(stopTimers){
-						String name = (String) critNameField.getValue();
-						String numString = critNumField.getText();
-						//TODO: Call Critter.makeCritter as many times as requested.
-						String critterClassName = name;
+						String critterClassName = (String) typeSelection.getValue();
+						String numString = amountField.getText();
 						int newCount = 1;
 						if(!numString.isEmpty()){ newCount = Integer.parseInt(numString); }
 						try{
 							for (int i = 0; i < newCount; i++) {
 								Critter.makeCritter(critterClassName);
 							}
-							critterTypes.add(name);
-							actionTarget.setFill(Color.FIREBRICK);
-							actionTarget.setText("Added " + Integer.toString(newCount) + " " + name + " Critters.");	
-							Critter.displayWorld(); // or Whatever
-							updateStats();
-							
+							critterTypes.add(critterClassName);
+							Critter.displayWorld(stage, shape); // or Whatever
+
 						} catch(InvalidCritterException e) {
-							actionTarget.setFill(Color.FIREBRICK);
-							actionTarget.setText("Invalid Critter!");
+                            critterSelection.setFill(Color.RED);
+                            critterSelection.setText("Invalid Critter!");
 						}
 					}
-				}			
+				}
 			});
-			stepBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+			go.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					String timeSteps = timeField.getText();
+					String steps = time.getText();
 					int timeStepsCount = 1;
-					if(!timeSteps.isEmpty()) { timeStepsCount = Integer.parseInt(timeSteps); } 
+
+					if(steps.isEmpty()){
+					    timeSelection.setFill(Color.RED);
+					    timeSelection.setText("Invalid Steps");
+					    return;
+                    }
+
+					if(!steps.isEmpty()){
+					    timeStepsCount = Integer.parseInt(steps);
+					}
+
 					for(int i = 0; i < timeStepsCount; i++){
 						Critter.worldTimeStep();
 					}
+
 					critterTypes.add("Algae");
-					Critter.displayWorld(); // or whatever
-					updateStats();
+					Critter.displayWorld(stage, shape); // or whatever
+					//updateStats();
 				}
 			});
-			quitBtn.setOnAction(new EventHandler<ActionEvent>(){
 
+			step.setOnAction(new EventHandler<ActionEvent>(){
+			    @Override
+                public void handle(ActionEvent event){
+                    Critter.worldTimeStep();
+                    critterTypes.add("Algae");
+                    Critter.displayWorld(stage, shape);
+                }
+            });
+
+
+			setSeed.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event){
+                    try{
+                        String getSeed = seedInput.getText();
+                        if(getSeed.isEmpty()){
+                            return;
+                        }
+
+                        long seedNumber = Integer.parseInt(getSeed);
+                        Critter.setSeed(seedNumber);
+                    } catch (Exception e){
+                        System.out.println("Invalid Seed");
+                    }
+                }
+            });
+
+			show.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event){
+                    String temp = (String)statSelection.getValue();
+                    try{
+                        int count = Critter.getInstances(temp).size();
+
+                        if(temp.equals("Algae")){
+                            statsAlgae.setFill(Color.ORANGE);
+                            statsAlgae.setText("Algea: " + count);
+                        }
+                        else if(temp.equals("Craig")){
+                            statsCraig.setFill(Color.BLUE);
+                            statsCraig.setText("Craig: " + count);
+                        }
+                        else if(temp.equals("Liuxx")){
+                            statsLiuxx.setFill(Color.LIGHTBLUE);
+                            statsLiuxx.setText("Liuxx: " + count);
+                        }
+                        else if(temp.equals("Joel")){
+                            statsJoel.setFill(Color.BLUEVIOLET);
+                            statsJoel.setText("Joel  : " + count);
+                        }
+
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+			exit.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {
-					Platform.exit();
+					System.exit(0);
 				}
-				
 			});
-			
-			resetButton.setOnAction(new EventHandler<ActionEvent>(){
 
+			reset.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {
-					// TODO Auto-generated method stub
 					Critter.clearWorld();
-					Critter.displayWorld();
-					updateStats();
+					Critter.displayWorld(stage, shape);
 				}
-				
+
 			});
 			//Play Fast Button
 			playFastButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -319,7 +358,7 @@ public class Main extends Application {
 					stopFast = false;
 					fast_animator = new Animator(100, "fast");
 				}
-				
+
 			});
 			//Play Slow
 			playSlowButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -330,16 +369,16 @@ public class Main extends Application {
 					stopSlow = false;
 					slow_animator = new Animator(300, "slow");
 				}
-				
+
 			});
 			//Pause
 			stopAnmtButton.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {
 					stopTimers = true;
-					
+
 				}
-				
+
 			});
 
 		} catch(Exception e) {
@@ -350,18 +389,13 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	public static void displayWorldGUI(ArrayList<Shape> population){
-			population.add(0, s);
-			world.getChildren().setAll(population);
-	}
-	
+
 	public static void updateStats() {
 		GridPane stats = new GridPane();
 		int statsRow = 0;
 		Text title = new Text("Stats:");
 		title.setUnderline(true);
-		title.setFill(Color.FIREBRICK);
+		title.setFill(Color.RED);
 		stats.add(title, 0, statsRow);
 		statsRow++;
 		
@@ -398,7 +432,6 @@ public class Main extends Application {
 		}
 		stats.setHgap(5);
 		stats.setVgap(5);
-		//stats.setGridLinesVisible(true);
 		stats.setAlignment(Pos.CENTER_LEFT);
 		stats.setPadding(new Insets(25, 25, 25, 25));
 		stats.setPrefWidth(300);
@@ -414,7 +447,8 @@ public class Main extends Application {
 			
 		});
 	}
-	
+
+
 	//Handles animation
 	class Animator {
 	    Timer timer;
@@ -439,8 +473,8 @@ public class Main extends Application {
 	        				timer.cancel();
 	        			else{
 	        				Critter.worldTimeStep();
-		                    Critter.displayWorld();
-		                    updateStats();
+		                    Critter.displayWorld(stage, shape);
+		                    //updateStats();
 	        			}
 	        		}
 	        	});

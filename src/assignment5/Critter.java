@@ -6,6 +6,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
+import javafx.scene.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -250,9 +252,6 @@ public abstract class Critter {
 	public static void worldTimeStep() {
 		for (Critter critter : population){
 			critter.doTimeStep();
-			if (critter.getEnergy() <= 0){
-				population.remove(critter);
-			}
 		}
 
 		//then process encounter
@@ -348,7 +347,7 @@ public abstract class Critter {
 		}
 	}
 	
-	public static void displayWorld() {
+	public static void displayWorld(Group stage, Shape shape) {
 		List<Shape> crittersAsShapes = new ArrayList<Shape>();
 		
 		Iterator<Critter> iterator = population.iterator();
@@ -356,7 +355,7 @@ public abstract class Critter {
 			Critter c = iterator.next();
 			Shape s;
 			if(c.x_coord < 0 || c.y_coord < 0)
-				System.out.println("coord error " + c.x_coord + " " + c.y_coord);
+				System.out.println("ERROR POSITION");
 			int xGUI = c.x_coord * (Main.worldWidthGUI/Params.world_width);
 			int yGUI = c.y_coord * (Main.worldHeightGUI/Params.world_height);
 			int radiusGUI = Main.worldWidthGUI/Params.world_width/2;
@@ -396,9 +395,10 @@ public abstract class Critter {
 			s.setStroke(c.viewOutlineColor());
 			crittersAsShapes.add(s);
 		}
-		
-		
-		Main.displayWorldGUI((ArrayList)crittersAsShapes);
+        ArrayList<Shape> critterList = (ArrayList)crittersAsShapes;
+
+		critterList.add(0, shape);
+        stage.getChildren().setAll(critterList);
 	} 
 	/* Alternate displayWorld, where you use Main.<pane> to reach into your
 	   display component.

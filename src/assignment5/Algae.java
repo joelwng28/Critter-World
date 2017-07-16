@@ -17,6 +17,7 @@ package assignment5;
  * Do not change or submit this file.
  */
 import assignment5.Critter.TestCritter;
+import javafx.scene.paint.Color;
 
 public class Algae extends TestCritter {
 
@@ -29,5 +30,8 @@ public class Algae extends TestCritter {
 	}
 
 	@Override
-	public CritterShape viewShape() { return CritterShape.SQUARE; }
+	public CritterShape viewShape() { return CritterShape.CIRCLE; }
+
+	@Override
+	public javafx.scene.paint.Color viewColor() { return Color.ORANGE; }
 }

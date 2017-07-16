@@ -1,4 +1,4 @@
-/* CRITTERS Liuxx1.java
+/* CRITTERS Liuxx2.java
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * Xiangxing Liu
@@ -13,22 +13,26 @@
  */
 package assignment5;
 
-public class Liuxx1 extends Critter{
+import javafx.scene.paint.Color;
+
+public class Joel extends Critter{
 
     private static  final boolean Debug = false;
     private Integer direction;
     private Integer fights;
+    private Integer producedDeath;
     private boolean move;
 
 
-    public Liuxx1(){
+    public Joel(){
         direction = Critter.getRandomInt(8);
         fights = 0;
         move = false;
+        producedDeath = 0;
     }
 
     public String toString(){
-        return "X";
+        return "J";
     }
 
     public int getDir(){
@@ -41,7 +45,6 @@ public class Liuxx1 extends Critter{
         }
         //determine current energy
         int current = getEnergy();
-        int res = (current - 50) / 20;
 
         if(current < 20){
             run(direction);
@@ -57,9 +60,17 @@ public class Liuxx1 extends Critter{
         }
         //choose to reproduce or not
         else if(current >= 100){
-            Liuxx1 child = new Liuxx1();
+            Joel child = new Joel();
             int g = Critter.getRandomInt(8);
             reproduce(child, g);
+        }
+        else if(current == 200){
+        	int numProduce = current / Params.min_reproduce_energy;
+        	for(int i = 0; i < numProduce; i++){
+        		Joel child = new Joel();
+                int g = Critter.getRandomInt(8);
+                reproduce(child, g);
+        	}
         }
 
         //reset direction
@@ -90,23 +101,24 @@ public class Liuxx1 extends Critter{
         return true;
     }
 
-
-
-    public static void runStats(java.util.List<Critter> Liuxx1){
+    public static void runStats(java.util.List<Critter> Liuxx2){
         int fightCount = 0;
         if(Debug){
         }
 
-        for(Critter critter : Liuxx1){
-            Liuxx1 stats = (Liuxx1) critter;
+        for(Critter critter : Liuxx2){
+            Joel stats = (Joel) critter;
             fightCount += stats.fights;
         }
-
-        System.out.println("" + Liuxx1.size() + " total number of Liuxx1");
-        System.out.println("" + fightCount + " total fights of Liuxx1");
+        
+        System.out.println("" + Liuxx2.size() + " total number of Joel");
+        System.out.println("" + fightCount + " total fights of Joel");
     }
 
     @Override
-    public CritterShape viewShape() { return CritterShape.SQUARE; }
+    public CritterShape viewShape() { return CritterShape.DIAMOND; }
+
+    @Override
+    public javafx.scene.paint.Color viewColor() { return Color.BLUEVIOLET; }
 
 }
