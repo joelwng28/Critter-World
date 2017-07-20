@@ -13,6 +13,8 @@
  */
 package assignment5;
 
+import javafx.scene.paint.Color;
+
 public class Moez extends Critter {
 	
 	@Override
@@ -88,5 +90,8 @@ public class Moez extends Critter {
 	}
 
 	@Override
-	public CritterShape viewShape() { return CritterShape.SQUARE; }
+	public CritterShape viewShape() { return CritterShape.TRIANGLE; }
+
+	@Override
+	public javafx.scene.paint.Color viewColor() { return Color.RED; }
 }

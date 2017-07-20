@@ -90,10 +90,27 @@ public class Joel extends Critter{
                 fights ++;
                 return true;
             }
+
+            else if(getEnergy() > 20){
+                String foresee = look(direction, false);
+                if(foresee == null){
+                    walk(direction);
+                    move = true;
+                }
+                else{
+                    //do nothing
+                }
+            }
             // if not, run away
             else{
-                run(direction);
-                return false;
+                String foresee = look(direction, true);
+                if(foresee == null){
+                    run(direction);
+                    move = true;
+                }
+                else{
+                    //do nothing
+                }
             }
         }
 

@@ -36,7 +36,6 @@ public abstract class Critter {
 	public javafx.scene.paint.Color viewColor() { 
 		return javafx.scene.paint.Color.WHITE; 
 	}
-	
 	public javafx.scene.paint.Color viewOutlineColor() { return viewColor(); }
 	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
 	
@@ -348,57 +347,47 @@ public abstract class Critter {
 	}
 	
 	public static void displayWorld(Group stage, Shape shape) {
-		List<Shape> crittersAsShapes = new ArrayList<Shape>();
-		
+		List<Shape> list = new ArrayList<Shape>();
 		Iterator<Critter> iterator = population.iterator();
 		while(iterator.hasNext()) {
 			Critter c = iterator.next();
-			Shape s;
+			Shape critterShape;
 			if(c.x_coord < 0 || c.y_coord < 0)
 				System.out.println("ERROR POSITION");
-			int xGUI = c.x_coord * (Main.worldWidthGUI/Params.world_width);
-			int yGUI = c.y_coord * (Main.worldHeightGUI/Params.world_height);
-			int radiusGUI = Main.worldWidthGUI/Params.world_width/2;
+			double x = (double)c.x_coord * ((double)Main.worldWidthGUI/(double)Params.world_width);
+			double y = (double)c.y_coord * ((double)Main.worldHeightGUI/(double)Params.world_height);
+			double radius = (double)Main.worldWidthGUI/(double)Params.world_width/2;
 			switch (c.viewShape()){
-				case SQUARE: 
-					s = new Polygon(xGUI, 				yGUI,
-									xGUI + 2*radiusGUI,  	yGUI,
-									xGUI + 2*radiusGUI,	yGUI + 2*radiusGUI,
-									xGUI,				yGUI + 2*radiusGUI);
+				case SQUARE:
+					critterShape = new Polygon(x, 				y,
+									x + 2*radius,  	y,
+									x + 2*radius,	y + 2*radius,
+									x,				y + 2*radius);
 					break;
 				case TRIANGLE: 
 					//created in bottom left, top, bottom right order
-					s = new Polygon(xGUI+1, yGUI + 2*radiusGUI-1, xGUI + radiusGUI, yGUI+1, xGUI + 2*radiusGUI-1, yGUI + 2*radiusGUI-1);
+					critterShape = new Polygon(x+1, y + 2*radius-1, x + radius, y+1, x + 2*radius-1, y + 2*radius-1);
 					break;
 				case DIAMOND: 
 					//created left, top, right, bottom
-					s = new Polygon(xGUI+1, yGUI + radiusGUI, xGUI + radiusGUI, yGUI+1, xGUI + 2*radiusGUI-1, yGUI + radiusGUI, xGUI + radiusGUI, yGUI + 2*radiusGUI-1);
+					critterShape = new Polygon(x+1, y + radius, x + radius, y+1, x + 2*radius-1, y + radius, x + radius, y + 2*radius-1);
 					break;
 				case STAR:
-					s = new Polygon(xGUI+1, 					yGUI + .8*radiusGUI,
-									xGUI + .7*radiusGUI, 	yGUI + .8*radiusGUI, 
-									xGUI + radiusGUI, 		yGUI + 1, 
-									xGUI + 1.3*radiusGUI,	yGUI + .8*radiusGUI,
-									xGUI + 2*radiusGUI - 1, 	yGUI + .8*radiusGUI,
-									xGUI + 1.4*radiusGUI, 	yGUI + 1.3*radiusGUI,
-									xGUI + 1.6*radiusGUI, 	yGUI + 2*radiusGUI - 1,
-									xGUI + radiusGUI, 		yGUI + 1.6*radiusGUI,
-									xGUI + .4*radiusGUI, 	yGUI + 2*radiusGUI-1,
-									xGUI + .6*radiusGUI,	yGUI + 1.3*radiusGUI);
+					critterShape = Liuxx.getShape((double)x, (double)y, (double)radius);
 					break;
 				default:
-					s = new Circle(xGUI + radiusGUI, yGUI + radiusGUI, radiusGUI);
+					critterShape = new Circle(x + radius, y + radius, radius);
 					break;
 			
 			}
-			s.setFill(c.viewColor());
-			s.setStroke(c.viewOutlineColor());
-			crittersAsShapes.add(s);
+			critterShape.setFill(c.viewColor());
+			critterShape.setStroke(c.viewOutlineColor());
+			list.add(critterShape);
 		}
-        ArrayList<Shape> critterList = (ArrayList)crittersAsShapes;
+        ArrayList<Shape> shapeList = (ArrayList)list;
 
-		critterList.add(0, shape);
-        stage.getChildren().setAll(critterList);
+		shapeList.add(0, shape);
+        stage.getChildren().setAll(shapeList);
 	} 
 	/* Alternate displayWorld, where you use Main.<pane> to reach into your
 	   display component.

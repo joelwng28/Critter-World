@@ -14,6 +14,8 @@
 package assignment5;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 
 public class Liuxx extends Critter{
 
@@ -50,8 +52,14 @@ public class Liuxx extends Critter{
             move = true;
         }
         else if(current < 50){
-            walk(direction);
-            move = true;
+            String foresee = look(direction, false);
+            if(foresee == null){
+                walk(direction);
+                move = true;
+            }
+            else{
+                //do nothing
+            }
         }
 
         else if(current < 100){
@@ -111,6 +119,24 @@ public class Liuxx extends Critter{
     public CritterShape viewShape() { return CritterShape.STAR; }
 
     @Override
-    public javafx.scene.paint.Color viewColor() { return Color.LIGHTBLUE; }
+    public javafx.scene.paint.Color viewColor() { return Color.LIGHTCYAN; }
+
+    public static Polygon getShape(double x, double y, double radius){
+        Polygon star = new Polygon();
+        star.getPoints().addAll(
+                x + 1, y + 0.8 * radius,
+                x + 0.7 * radius, y + 0.8 * radius,
+                x + radius, y + 1,
+                x + 1.3 * radius, y + 0.8 * radius,
+                x + 2 * radius - 1, y + 0.8 * radius,
+                x + 1.4 * radius, y + 1.3 * radius,
+                x + 1.6 * radius, y + 2 * radius - 1,
+                x + radius, y + 1.6 * radius,
+                x + 0.4 * radius, y + 2 * radius-1,
+                x + 0.6 * radius, y + 1.3 * radius
+        );
+
+        return star;
+    }
 
 }

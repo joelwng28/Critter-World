@@ -13,6 +13,8 @@ package assignment5;
  * Summer 2017
  */
 
+import javafx.scene.paint.Color;
+
 public class Nandakumar extends Critter {
 	
 	@Override
@@ -88,5 +90,8 @@ public class Nandakumar extends Critter {
 	}
 
 	@Override
-	public CritterShape viewShape() { return CritterShape.SQUARE; }
+	public CritterShape viewShape() { return CritterShape.CIRCLE; }
+
+	@Override
+	public javafx.scene.paint.Color viewColor() { return Color.DARKGREEN; }
 }

@@ -48,7 +48,7 @@ public class Main extends Application {
 	static Group stage = new Group();
 	static Set<String> critterTypes = new HashSet<String>();
 	static GridPane grid = new GridPane();
-	static BorderPane window = new BorderPane();
+	public static BorderPane window = new BorderPane();
 	static int row = 0;
 	static int worldWidthGUI = 640;
 	static int worldHeightGUI = 640;
@@ -64,12 +64,13 @@ public class Main extends Application {
 	public void start(Stage primaryStage){
 		try{
 			primaryStage.setTitle("Project 5");
-			shape = new Rectangle(worldWidthGUI, worldHeightGUI);
+			shape = new Rectangle(worldWidthGUI + 2, worldHeightGUI + 2);
 			shape.setFill(Color.LAVENDER);
 			shape.setStroke(Color.BLACK);
 			shape.setStrokeDashOffset(10);
 			shape.setStrokeWidth(2);
 			stage.getChildren().add(shape);
+			stage.setAutoSizeChildren(true);
 
 			// Add a grid pane to lay out the buttons and text fields.
 			window.setLeft(grid);
