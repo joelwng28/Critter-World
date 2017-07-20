@@ -1,5 +1,5 @@
-/* CRITTERS Craig.java
- * EE422C Project 4 submission by
+/* CRITTERS Liuxx2.java
+ * EE422C Project 5 submission by
  * Replace <...> with your actual data.
  * Xiangxing Liu
  * xl5587
@@ -8,11 +8,15 @@
  * zw3948
  * 76175
  * Slip days used: <0>
- * Git URL: https://github.com/joelwng28/assignment4
+ * Git URL: https://github.com/xxuil/Critter
  * Summer 2017
  */
 package assignment5;
 
+
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 
 /*
  * Example critter
@@ -92,5 +96,24 @@ public class Craig extends Critter {
 	public CritterShape viewShape() { return CritterShape.SQUARE; }
 
 	@Override
-	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.BLUE; }
+	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.BLUE; }
+
+    @Override
+    public javafx.scene.paint.Color viewOutlineColor () { return Color.BLACK; }
+
+    public static Shape getShape(double x, double y, double radius){
+        Polygon square = new Polygon();
+        square.getPoints().addAll(
+                x,
+                y,
+                x + 2 * radius,
+                y,
+                x + 2 * radius,
+                y + 2 * radius,
+                x,
+                y + 2 * radius
+        );
+
+        return square;
+    }
 }

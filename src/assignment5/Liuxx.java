@@ -1,5 +1,5 @@
-/* CRITTERS Liuxx1.java
- * EE422C Project 4 submission by
+/* CRITTERS Liuxx2.java
+ * EE422C Project 5 submission by
  * Replace <...> with your actual data.
  * Xiangxing Liu
  * xl5587
@@ -8,14 +8,13 @@
  * zw3948
  * 76175
  * Slip days used: <0>
- * Git URL: https://github.com/joelwng28/assignment4
+ * Git URL: https://github.com/xxuil/Critter
  * Summer 2017
  */
 package assignment5;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Shape;
 
 public class Liuxx extends Critter{
 
@@ -119,7 +118,9 @@ public class Liuxx extends Critter{
     public CritterShape viewShape() { return CritterShape.STAR; }
 
     @Override
-    public javafx.scene.paint.Color viewColor() { return Color.LIGHTCYAN; }
+    public javafx.scene.paint.Color viewFillColor() { return Color.LIGHTCYAN; }
+    @Override
+    public javafx.scene.paint.Color viewOutlineColor () { return Color.BLACK; }
 
     public static Polygon getShape(double x, double y, double radius){
         Polygon star = new Polygon();

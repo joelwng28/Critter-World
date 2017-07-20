@@ -1,6 +1,6 @@
 package assignment5;
-/* CRITTERS Params.java
- * EE422C Project 4 submission by
+/* CRITTERS Liuxx2.java
+ * EE422C Project 5 submission by
  * Replace <...> with your actual data.
  * Xiangxing Liu
  * xl5587
@@ -9,7 +9,7 @@ package assignment5;
  * zw3948
  * 76175
  * Slip days used: <0>
- * Git URL: https://github.com/joelwng28/assignment4
+ * Git URL: https://github.com/xxuil/Critter
  * Summer 2017
  */
 

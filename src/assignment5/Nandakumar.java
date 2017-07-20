@@ -1,6 +1,6 @@
 package assignment5;
-/* CRITTERS Nandakumar.java
- * EE422C Project 4 submission by
+/* CRITTERS Liuxx2.java
+ * EE422C Project 5 submission by
  * Replace <...> with your actual data.
  * Xiangxing Liu
  * xl5587
@@ -9,11 +9,13 @@ package assignment5;
  * zw3948
  * 76175
  * Slip days used: <0>
- * Git URL: https://github.com/joelwng28/assignment4
+ * Git URL: https://github.com/xxuil/Critter
  * Summer 2017
  */
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 
 public class Nandakumar extends Critter {
 	
@@ -93,5 +95,16 @@ public class Nandakumar extends Critter {
 	public CritterShape viewShape() { return CritterShape.CIRCLE; }
 
 	@Override
-	public javafx.scene.paint.Color viewColor() { return Color.DARKGREEN; }
+	public javafx.scene.paint.Color viewFillColor() { return Color.DARKGREEN; }
+    @Override
+    public javafx.scene.paint.Color viewOutlineColor () { return Color.BLACK; }
+
+	public static Shape getShape(double x, double y, double radius){
+        Circle circle = new Circle(
+                x + radius,
+                y + radius,
+                radius);
+
+        return circle;
+	}
 }

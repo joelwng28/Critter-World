@@ -1,5 +1,5 @@
 /* CRITTERS Liuxx2.java
- * EE422C Project 4 submission by
+ * EE422C Project 5 submission by
  * Replace <...> with your actual data.
  * Xiangxing Liu
  * xl5587
@@ -8,12 +8,14 @@
  * zw3948
  * 76175
  * Slip days used: <0>
- * Git URL: https://github.com/joelwng28/assignment4
+ * Git URL: https://github.com/xxuil/Critter
  * Summer 2017
  */
 package assignment5;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 
 public class Joel extends Critter{
 
@@ -136,6 +138,26 @@ public class Joel extends Critter{
     public CritterShape viewShape() { return CritterShape.DIAMOND; }
 
     @Override
-    public javafx.scene.paint.Color viewColor() { return Color.BLUEVIOLET; }
+    public javafx.scene.paint.Color viewFillColor() { return Color.BLUEVIOLET; }
+
+    @Override
+    public javafx.scene.paint.Color viewOutlineColor () { return Color.BLACK; }
+
+
+    public static Shape getShape(double x, double y, double radius){
+        Polygon diamond = new Polygon();
+        diamond.getPoints().addAll(
+                x + 1,
+                y + radius,
+                x + radius,
+                y + 1,
+                x + 2 * radius - 1,
+                y + radius,
+                x + radius,
+                y + 2 * radius - 1
+        );
+
+        return diamond;
+    }
 
 }

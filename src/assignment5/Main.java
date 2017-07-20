@@ -1,45 +1,29 @@
 package assignment5;
-/* CRITTERS <MyClass.java>
- * EE422C assignment 5 submission by
- * Matt Owens
- * mo8755
- * 16340
- * Yash Parekh
- * yjp246
- * 16345
- * Slip days used: 1
- * Fall 2015
- */
-	
 
-import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.ArrayList;
-import java.util.Iterator;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Scene;
+/* CRITTERS Liuxx2.java
+ * EE422C Project 5 submission by
+ * Replace <...> with your actual data.
+ * Xiangxing Liu
+ * xl5587
+ * 76175
+ * Zi Zhou Wang
+ * zw3948
+ * 76175
+ * Slip days used: <0>
+ * Git URL: https://github.com/xxuil/Critter
+ * Summer 2017
+ */
+
+import java.util.*;
+import javafx.application.*;
+import javafx.collections.*;
+import javafx.event.*;
+import javafx.geometry.*;
+import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -50,21 +34,26 @@ public class Main extends Application {
 	static GridPane grid = new GridPane();
 	public static BorderPane window = new BorderPane();
 	static int row = 0;
-	static int worldWidthGUI = 640;
-	static int worldHeightGUI = 640;
+	static int worldWidth = 720;
+	static int worldHeight = 720;
 	static Shape shape;
-	static boolean stopTimers = true;
-	static boolean stopFast = false;
-	static boolean stopSlow = false;
-	Animator fast_animator;
-	Animator slow_animator;
+
+	static Motion motion;
+    static boolean stopMotion = true;
+    static Text statsAlgae;
+    static Text statsCraig;
+    static Text statsLiuxx;
+    static Text statsJoel;
+    static Text statsMoez;
+    static Text statsNanda;
+
 
 
 	@Override
 	public void start(Stage primaryStage){
 		try{
 			primaryStage.setTitle("Project 5");
-			shape = new Rectangle(worldWidthGUI + 2, worldHeightGUI + 2);
+			shape = new Rectangle(worldWidth + 2, worldHeight + 2);
 			shape.setFill(Color.LAVENDER);
 			shape.setStroke(Color.BLACK);
 			shape.setStrokeDashOffset(10);
@@ -158,7 +147,18 @@ public class Main extends Application {
             row += 10;
             grid.add(stat, 0, row);
             ComboBox statSelection = new ComboBox();
-            statSelection.setItems(typeList);
+
+            ObservableList<String> statsList = FXCollections.observableArrayList(
+                    "Algae",
+                    "Craig",
+                    "Liuxx",
+                    "Joel",
+                    "Nandakumar",
+                    "Moez",
+                    "All"
+            );
+
+            statSelection.setItems(statsList);
             grid.add(statSelection, 1, row);
 
             Button show = new Button("Show");
@@ -168,43 +168,64 @@ public class Main extends Application {
             grid.add(showBox, 2, row);
 
             row += 2;
-            final Text statsAlgae = new Text();
+            statsAlgae = new Text("");
             grid.add(statsAlgae, 1, row);
 
-            final Text statsCraig = new Text();
+            Button off = new Button("Off");
+            HBox offBox = new HBox(10);
+            offBox.setAlignment(Pos.BOTTOM_LEFT);
+            offBox.getChildren().add(off);
+            grid.add(offBox, 2, row);
+
+            statsCraig = new Text("");
             row += 1;
             grid.add(statsCraig, 1, row);
 
-            final Text statsLiuxx = new Text();
+            statsLiuxx = new Text("");
             row += 1;
             grid.add(statsLiuxx, 1, row);
 
-            final Text statsJoel = new Text();
+            statsJoel = new Text("");
             row += 1;
             grid.add(statsJoel, 1, row);
 
+            statsMoez = new Text("");
+            row ++;
+            grid.add(statsMoez, 1, row);
+
+            statsNanda = new Text("");
+            row ++;
+            grid.add(statsNanda, 1, row);
+
 
 			//Add buttons for animation
-			Button playSlowButton = new Button("Slow");
-			playSlowButton.setPrefWidth(70);
-			HBox hbPSBtn = new HBox(10);
-			hbPSBtn.setAlignment(Pos.BOTTOM_LEFT);
-			hbPSBtn.getChildren().add(playSlowButton);
-			grid.add(hbPSBtn, 2, row+5);
+			Button play = new Button("Play");
+			play.setPrefWidth(70);
+			HBox playBox = new HBox(10);
+            playBox.setAlignment(Pos.BOTTOM_LEFT);
+            playBox.getChildren().add(play);
+			grid.add(playBox, 2, row + 5);
 
-			Button playFastButton = new Button("Fast");
-			playFastButton.setPrefWidth(70);
-			HBox hbPFBtn = new HBox(10);
-			hbPFBtn.setAlignment(Pos.BOTTOM_LEFT);
-			hbPFBtn.getChildren().add(playFastButton);
-			grid.add(hbPFBtn, 2, row+6);
+            Button slow = new Button("Slow");
+            slow.setPrefWidth(70);
+            HBox slowBox = new HBox(10);
+            slowBox.setAlignment(Pos.BOTTOM_LEFT);
+            slowBox.getChildren().add(slow);
+            grid.add(slowBox, 2, row + 6);
 
-			Button stopAnmtButton = new Button("Pause");
-			stopAnmtButton.setPrefWidth(70);
-			HBox hbStpAnmtBtn = new HBox(10);
-			hbStpAnmtBtn.setAlignment(Pos.BOTTOM_LEFT);
-			hbStpAnmtBtn.getChildren().add(stopAnmtButton);
-			grid.add(hbStpAnmtBtn, 2, row+7);
+			Button playFast = new Button("Fast");
+			playFast.setPrefWidth(70);
+			HBox fastBox = new HBox(10);
+			fastBox.setAlignment(Pos.BOTTOM_LEFT);
+			fastBox.getChildren().add(playFast);
+			grid.add(fastBox, 2, row+7);
+
+			Button stopPlay = new Button("Stop");
+			stopPlay.setPrefWidth(70);
+			HBox stopBox = new HBox(10);
+			stopBox.setAlignment(Pos.BOTTOM_LEFT);
+			stopBox.getChildren().add(stopPlay);
+			grid.add(stopBox, 2, row+8);
 
             //Add exit button
             Button exit = new Button("Exit");
@@ -212,7 +233,7 @@ public class Main extends Application {
             HBox exitBox = new HBox(10);
             exitBox.setAlignment(Pos.BOTTOM_RIGHT);
             exitBox.getChildren().add(exit);
-            row += 20;
+            row += 15;
             grid.add(exitBox, 0, row);
 
             //Add reset button
@@ -223,7 +244,7 @@ public class Main extends Application {
             resBox.getChildren().add(reset);
             grid.add(resBox, 1, row);
 
-            Scene scene = new Scene(window, worldWidthGUI + 362, worldHeightGUI + 2);
+            Scene scene = new Scene(window, 1650, 800);
             primaryStage.setScene(scene);
             primaryStage.show();
 
@@ -231,7 +252,7 @@ public class Main extends Application {
 			add.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					if(stopTimers){
+					if(stopMotion){
 						String critterClassName = (String) typeSelection.getValue();
 						String numString = amountField.getText();
 						int newCount = 1;
@@ -308,30 +329,85 @@ public class Main extends Application {
                 @Override
                 public void handle(ActionEvent event){
                     String temp = (String)statSelection.getValue();
-                    try{
-                        int count = Critter.getInstances(temp).size();
-
-                        if(temp.equals("Algae")){
+                    int count;
+                    if(temp == null || temp == "All"){
+                        try {
+                            temp = "Algae";
+                            count = Critter.getInstances(temp).size();
                             statsAlgae.setFill(Color.ORANGE);
                             statsAlgae.setText("Algea: " + count);
-                        }
-                        else if(temp.equals("Craig")){
+                            temp = "Craig";
+                            count = Critter.getInstances(temp).size();
                             statsCraig.setFill(Color.BLUE);
                             statsCraig.setText("Craig: " + count);
-                        }
-                        else if(temp.equals("Liuxx")){
-                            statsLiuxx.setFill(Color.LIGHTBLUE);
+                            temp = "Liuxx";
+                            count = Critter.getInstances(temp).size();
+                            statsLiuxx.setFill(Color.BLACK);
                             statsLiuxx.setText("Liuxx: " + count);
-                        }
-                        else if(temp.equals("Joel")){
+                            temp = "Joel";
+                            count = Critter.getInstances(temp).size();
                             statsJoel.setFill(Color.BLUEVIOLET);
                             statsJoel.setText("Joel  : " + count);
+                            temp = "Moez";
+                            count = Critter.getInstances(temp).size();
+                            statsMoez.setFill(Color.RED);
+                            statsMoez.setText("Moez  : " + count);
+                            temp = "Nandakumar";
+                            count = Critter.getInstances(temp).size();
+                            statsNanda.setFill(Color.DARKGREEN);
+                            statsNanda.setText("Nandakumar  : " + count);
                         }
-
-
-                    }catch (Exception e){
-                        e.printStackTrace();
+                        catch(Exception e){
+                            e.printStackTrace();
+                        }
                     }
+                    else{
+                        try{
+                            count = Critter.getInstances(temp).size();
+
+                            if(temp.equals("Algae")){
+                                statsAlgae.setFill(Color.ORANGE);
+                                statsAlgae.setText("Algea: " + count);
+                            }
+                            else if(temp.equals("Craig")){
+                                statsCraig.setFill(Color.BLUE);
+                                statsCraig.setText("Craig: " + count);
+                            }
+                            else if(temp.equals("Liuxx")){
+                                statsLiuxx.setFill(Color.BLACK);
+                                statsLiuxx.setText("Liuxx: " + count);
+                            }
+                            else if(temp.equals("Joel")){
+                                statsJoel.setFill(Color.BLUEVIOLET);
+                                statsJoel.setText("Joel  : " + count);
+                            }
+
+                            else if(temp.equals("Moez")){
+                                statsMoez.setFill(Color.RED);
+                                statsMoez.setText("Moez  : " + count);
+                            }
+
+                            else if(temp.equals("Nandakumar")){
+                                statsNanda.setFill(Color.DARKGREEN);
+                                statsNanda.setText("Nandakumar  : " + count);
+                            }
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+			off.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event){
+                    statsAlgae.setText("");
+                    statsCraig.setText("");
+                    statsLiuxx.setText("");
+                    statsJoel.setText("");
+                    statsMoez.setText("");
+                    statsNanda.setText("");
                 }
             });
 
@@ -346,136 +422,153 @@ public class Main extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					Critter.clearWorld();
+                    statsAlgae.setText("");
+                    statsCraig.setText("");
+                    statsLiuxx.setText("");
+                    statsJoel.setText("");
+                    statsMoez.setText("");
+                    statsNanda.setText("");
 					Critter.displayWorld(stage, shape);
 				}
 
 			});
-			//Play Fast Button
-			playFastButton.setOnAction(new EventHandler<ActionEvent>(){
+
+
+
+			play.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {
-					stopTimers = false;
-					stopSlow = true;
-					stopFast = false;
-					fast_animator = new Animator(100, "fast");
+					stopMotion = false;
+					motion = new Motion();
 				}
 
 			});
-			//Play Slow
-			playSlowButton.setOnAction(new EventHandler<ActionEvent>(){
+
+            slow.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    if (stopMotion) {
+                        return;
+                    }
+                    motion.slow();
+                }
+            });
+
+            playFast.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+                    if(stopMotion){
+                        return;
+                    }
+                    motion.fast();
+                }
+
+            });
+
+
+			stopPlay.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event) {
-					stopTimers = false;
-					stopFast = true;
-					stopSlow = false;
-					slow_animator = new Animator(300, "slow");
+					stopMotion = true;
 				}
-
-			});
-			//Pause
-			stopAnmtButton.setOnAction(new EventHandler<ActionEvent>(){
-				@Override
-				public void handle(ActionEvent event) {
-					stopTimers = true;
-
-				}
-
 			});
 
 		} catch(Exception e) {
 			e.printStackTrace();		
 		}
 	}
+
+	public static void updateStats(String type){
+
+    }
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-	public static void updateStats() {
-		GridPane stats = new GridPane();
-		int statsRow = 0;
-		Text title = new Text("Stats:");
-		title.setUnderline(true);
-		title.setFill(Color.RED);
-		stats.add(title, 0, statsRow);
-		statsRow++;
-		
-		ComboBox critNameField = new ComboBox();
-		ObservableList<String> critterList = FXCollections.observableArrayList(
-				"Algae", 
-				"Craig"
-				);
-		critNameField.setItems(critterList);
-		stats.add(critNameField, 0, statsRow);
-		statsRow++;
-		Button statBtn = new Button("Get Stats");
-		HBox hbStatBtn = new HBox(10);
-		hbStatBtn.setAlignment(Pos.CENTER_LEFT);
-		hbStatBtn.getChildren().add(statBtn);
-		row += 2;
-		stats.add(hbStatBtn, 0, statsRow);
-		
-		statsRow++;
-		Iterator<String> iterator = critterTypes.iterator();
-		while(iterator.hasNext()) {
-			String stat;
-			int critterCount = 0;
-			String critter = iterator.next();
-			try {
-				critterCount = Critter.getInstances(critter).size();
-			} catch (InvalidCritterException e) {
-				e.printStackTrace();
-			}
-			stat = critterCount + " " + critter + " Critters";
-			Text statText = new Text("  " + stat);
-			stats.add(statText, 0, statsRow);
-			statsRow++;
-		}
-		stats.setHgap(5);
-		stats.setVgap(5);
-		stats.setAlignment(Pos.CENTER_LEFT);
-		stats.setPadding(new Insets(25, 25, 25, 25));
-		stats.setPrefWidth(300);
-		window.setRight(stats);
-		
-		statBtn.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-				critterTypes.add((String) critNameField.getValue());
-				updateStats();
-			}
-			
-		});
-	}
-
-
-	//Handles animation
-	class Animator {
+    
+	class Motion {
 	    Timer timer;
-	    String speed;
+	    private long period;
 
-	    public Animator(long milliseconds, String label) {
+	    public Motion() {
 	        timer = new Timer();
-	        speed = label;
-	        timer.schedule(new AnimateTask(), 0, milliseconds);
+	        period = 1000;
+	        timer.schedule(new MotionTask(), 0, period);
 		}
+
+		public void fast(){
+	        if(period < 51){
+	            return;
+            }
+
+	        period = period - 50;
+            timer = new Timer();
+            timer.schedule(new MotionTask(), 0, period);
+        }
+
+        public void slow(){
+		    if(period > 999)
+		        return;
+		    period = period + 100;
+            timer = new Timer();
+            timer.schedule(new MotionTask(), 0, period);
+        }
 	    
-	    class AnimateTask extends TimerTask {
+	    class MotionTask extends TimerTask {
 	        public void run() {
 	        	Platform.runLater(new Runnable() {
 	        		public void run() {
 	        			critterTypes.add("Algae");
-	        			if(stopTimers)
+	        			if(stopMotion)
 	        				timer.cancel();
-	        			else if(speed.equals("fast") && stopFast)
-	        				timer.cancel();
-	        			else if(speed.equals("slow") && stopSlow)
-	        				timer.cancel();
+
 	        			else{
 	        				Critter.worldTimeStep();
 		                    Critter.displayWorld(stage, shape);
-		                    //updateStats();
+                            try{
+                                if(!statsAlgae.getText().equals("")){
+                                    String temp = "Algae";
+                                    int count = Critter.getInstances(temp).size();
+                                    statsAlgae.setFill(Color.ORANGE);
+                                    statsAlgae.setText("Algea: " + count);
+                                }
+                                if(!statsCraig.getText().equals("")){
+                                    String temp = "Craig";
+                                    int count = Critter.getInstances(temp).size();
+                                    statsCraig.setFill(Color.BLUE);
+                                    statsCraig.setText("Craig: " + count);
+                                }
+                                if(!statsLiuxx.getText().equals("")){
+                                    String temp = "Liuxx";
+                                    int count = Critter.getInstances(temp).size();
+                                    statsLiuxx.setFill(Color.BLACK);
+                                    statsLiuxx.setText("Liuxx: " + count);
+                                }
+                                if(!statsJoel.getText().equals("")){
+                                    String temp = "Joel";
+                                    int count = Critter.getInstances(temp).size();
+                                    statsJoel.setFill(Color.BLUEVIOLET);
+                                    statsJoel.setText("Joel: " + count);
+                                }
+
+                                if(!statsMoez.getText().equals("")){
+                                    String temp = "Moez";
+                                    int count = Critter.getInstances(temp).size();
+                                    statsMoez.setFill(Color.RED);
+                                    statsMoez.setText("Moez: " + count);
+                                }
+
+                                if(!statsNanda.getText().equals("")){
+                                    String temp = "Nandakumar";
+                                    int count = Critter.getInstances(temp).size();
+                                    statsNanda.setFill(Color.DARKGREEN);
+                                    statsNanda.setText("Nandakumar: " + count);
+                                }
+                            }
+                            catch (InvalidCritterException e){
+
+                            }
+
 	        			}
 	        		}
 	        	});

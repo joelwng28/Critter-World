@@ -1,6 +1,20 @@
 package assignment5;
 
-import java.util.List;
+/* CRITTERS Liuxx2.java
+ * EE422C Project 5 submission by
+ * Replace <...> with your actual data.
+ * Xiangxing Liu
+ * xl5587
+ * 76175
+ * Zi Zhou Wang
+ * zw3948
+ * 76175
+ * Slip days used: <0>
+ * Git URL: https://github.com/xxuil/Critter
+ * Summer 2017
+ */
+
+import java.util.*;
 import java.lang.reflect.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
@@ -8,8 +22,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.scene.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 
 public abstract class Critter {
@@ -349,50 +362,51 @@ public abstract class Critter {
 	public static void displayWorld(Group stage, Shape shape) {
 		List<Shape> list = new ArrayList<Shape>();
 		Iterator<Critter> iterator = population.iterator();
+
 		while(iterator.hasNext()) {
-			Critter c = iterator.next();
+			Critter critter = iterator.next();
 			Shape critterShape;
-			if(c.x_coord < 0 || c.y_coord < 0)
-				System.out.println("ERROR POSITION");
-			double x = (double)c.x_coord * ((double)Main.worldWidthGUI/(double)Params.world_width);
-			double y = (double)c.y_coord * ((double)Main.worldHeightGUI/(double)Params.world_height);
-			double radius = (double)Main.worldWidthGUI/(double)Params.world_width/2;
-			switch (c.viewShape()){
+
+			double x = ((double)critter.x_coord * ((double)Main.worldWidth/(double)Params.world_width));
+			double y = ((double)critter.y_coord * ((double)Main.worldHeight/(double)Params.world_height));
+			double radius = ((double)Main.worldWidth/(double)Params.world_width/2);
+
+			switch (critter.viewShape()){
 				case SQUARE:
-					critterShape = new Polygon(x, 				y,
-									x + 2*radius,  	y,
-									x + 2*radius,	y + 2*radius,
-									x,				y + 2*radius);
+					critterShape = Craig.getShape(x, y, radius);
 					break;
-				case TRIANGLE: 
-					//created in bottom left, top, bottom right order
-					critterShape = new Polygon(x+1, y + 2*radius-1, x + radius, y+1, x + 2*radius-1, y + 2*radius-1);
+
+				case TRIANGLE:
+					critterShape = Moez.getShape(x, y, radius);
 					break;
-				case DIAMOND: 
-					//created left, top, right, bottom
-					critterShape = new Polygon(x+1, y + radius, x + radius, y+1, x + 2*radius-1, y + radius, x + radius, y + 2*radius-1);
+
+				case DIAMOND:
+					critterShape = Joel.getShape(x, y, radius);
 					break;
+
 				case STAR:
-					critterShape = Liuxx.getShape((double)x, (double)y, (double)radius);
+					critterShape = Liuxx.getShape(x, y, radius);
 					break;
-				default:
-					critterShape = new Circle(x + radius, y + radius, radius);
+
+                case CIRCLE:
+					critterShape = Nandakumar.getShape(x, y, radius);
 					break;
+
+                default:
+                    critterShape = null;
 			
 			}
-			critterShape.setFill(c.viewColor());
-			critterShape.setStroke(c.viewOutlineColor());
-			list.add(critterShape);
+			if(critterShape != null) {
+                critterShape.setFill(critter.viewFillColor());
+                critterShape.setStroke(critter.viewOutlineColor());
+                list.add(critterShape);
+            }
 		}
-        ArrayList<Shape> shapeList = (ArrayList)list;
 
+        ArrayList<Shape> shapeList = (ArrayList)list;
 		shapeList.add(0, shape);
         stage.getChildren().setAll(shapeList);
-	} 
-	/* Alternate displayWorld, where you use Main.<pane> to reach into your
-	   display component.
-	   // public static void displayWorld() {}
-	*/
+	}
 	
 	/* create and initialize a Critter subclass
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
@@ -411,7 +425,6 @@ public abstract class Critter {
 			population.add(newCritter);
 		} catch (Exception e) {
 			throw new InvalidCritterException(critter_class_name);
-			//e.printStackTrace();
 		}
 	}
 	
